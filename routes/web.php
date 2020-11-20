@@ -18,6 +18,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->post('/register','UsersController@register');
+$router->post('/newpost', 'PostsController@create');
 
 
 

@@ -60,6 +60,7 @@ $app->singleton(
 */
 
 $app->configure('app');
+
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
@@ -71,15 +72,31 @@ $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 | route or middleware that'll be assigned to some specific routes.
 |
 */
+$app->configure('auth');
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+// Enable Facades
+$app->withFacades();
+// Enable Eloquent
+$app->withEloquent();
+
+// Enable auth middleware (shipped with Lumen)
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
+
+// Finally register two service providers - original one and Lumen adapter
+$app->register(Laravel\Passport\PassportServiceProvider::class);
+$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+
+\Dusterio\LumenPassport\LumenPassport::routes($app, ['prefix' => 'v1/oauth']);
+
+// $app->configure('cors');
+
+// $app->register(Fruitcake\Cors\CorsServiceProvider::class);
 
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
 // ]);
-
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -90,44 +107,30 @@ $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 | totally optional, so you are not required to uncomment this line.
 |
 */
-// Enable Facades
-$app->withFacades();
 
-// Enable Eloquent
-$app->withEloquent();
+// $app->register(App\Providers\AppServiceProvider::class);
+// $app->register(App\Providers\AuthServiceProvider::class);
+// $app->register(App\Providers\EventServiceProvider::class);
 
-// Enable auth middleware (shipped with Lumen)
-$app->routeMiddleware([
-    'auth' => App\Http\Middleware\Authenticate::class,
-    ]);
-    $app->register(App\Providers\AppServiceProvider::class);
-    $app->register(App\Providers\AuthServiceProvider::class);
-    $app->register(App\Providers\EventServiceProvider::class);
-    
-    
-    // Finally register two service providers - original one and Lumen adapter
-    $app->register(Laravel\Passport\PassportServiceProvider::class);
-    $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
-    
-    $app->configure('auth');
-    
-    /*
-    |--------------------------------------------------------------------------
-    | Load The Application Routes
-    |--------------------------------------------------------------------------
-    |
-    | Next we will include the routes file so that they can all be added to
-    | the application. This will provide all of the URLs the application
-    | can respond to, as well as the controllers that may handle them.
-    |
-    */
-    
-\Dusterio\LumenPassport\LumenPassport::routes($app, ['prefix' => 'v1/oauth']);
-    
+/*
+|--------------------------------------------------------------------------
+| Load The Application Routes
+|--------------------------------------------------------------------------
+|
+| Next we will include the routes file so that they can all be added to
+| the application. This will provide all of the URLs the application
+| can respond to, as well as the controllers that may handle them.
+|
+*/
+
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
+
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class
+ ]);
 
 return $app;

@@ -1,6 +1,7 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
+Use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,10 @@ $router->get('/', function () use ($router) {
 
 $router->post('/register','UsersController@register');
 $router->post('/newpost', 'PostsController@create');
+$router->get('/api/user', function(Request $request) {
+    $user = $request->user();
+    return $user->toArray();
+});
 
 
 

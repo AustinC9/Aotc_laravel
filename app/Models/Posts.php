@@ -12,5 +12,8 @@ class Posts extends Model
     protected $primrary = 'id';
     public $incrementing = true;
     public $timestamps = true;
+    public function user(){
+        return $this->belongsTo("App\Models\User");
+    }
 
 }

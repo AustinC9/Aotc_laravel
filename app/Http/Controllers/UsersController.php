@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Validator;
+
 
 class UsersController extends Controller
 {
@@ -19,19 +21,32 @@ class UsersController extends Controller
             'password' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response(['message' => 'Validation errors', 'errors' =>  $validator->errors(), 'status' => false], 422);
         }
 
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
-      
+
         /**Take note of this: Your user authentication access token is generated here **/
         $data['token'] =  $user->createToken('MyApp')->accessToken;
         $data['name'] =  $user->name;
 
         return response(['data' => $data, 'message' => 'Account created successfully!', 'status' => true]);
-    }  
-     
+    }
+    public function view_postById(Request $request)
+    {
+        $user = $request->user();
+        $posts = $user->posts()->get();
+        return $posts->toArray();
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        $request->user()->token()->delete();
+
+        $response = 'you have been successfully logged out!';
+        return response($response, 200);
+    }
 }

@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
+
+use App\Http\Controllers\UsersController;
 Use Illuminate\Http\Request;
 
 /*
@@ -19,10 +21,18 @@ $router->get('/', function () use ($router) {
 });
 
 $router->post('/register','UsersController@register');
-$router->post('/newpost', 'PostsController@create');
-$router->get('/api/user', function(Request $request) {
-    $user = $request->user();
-    return $user->toArray();
+
+$router->get('/posts', 'PostsController@index');
+
+$router->group(['middleware' => 'auth'], function() use ($router) {
+    
+    $router->post('/newpost', 'PostsController@create');
+    $router->get('/api/user', function(Request $request) {
+        $user = $request->user();
+        return $user->toArray();
+    });
+    $router->get('/userposts', 'UsersController@view_postById');
+    $router->get('/logout', 'UsersController@logout');
 });
 
 

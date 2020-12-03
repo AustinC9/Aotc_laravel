@@ -12,10 +12,12 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        return Posts::all();
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -25,9 +27,11 @@ class PostsController extends Controller
     public function create(Request $request)
     {
         $post = new Posts;
+        $user = $request->user();
         $input = $request->all();
         $post->title = $input["title"];
         $post->body = $input["body"];
+        $post->ref_author_id = $user['id'];
         $post->save();
         // return response(['data' => $data, 'message' => 'Account created successfully!', 'status' => true]);
 

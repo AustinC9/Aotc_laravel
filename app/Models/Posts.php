@@ -12,8 +12,13 @@ class Posts extends Model
     protected $primrary = 'id';
     public $incrementing = true;
     public $timestamps = true;
+    protected $with = ["user"];
+
     public function user(){
-        return $this->belongsTo("App\Models\User");
+        return $this->belongsTo("App\Models\User", 'ref_author_id');
+    }
+    public function comments(){
+        return $this->hasMany("App\Models\Comment",'parent_id');
     }
 
 }

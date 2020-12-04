@@ -20,6 +20,15 @@ class Posts extends Migration
             $table->unsignedBigInteger('ref_author_id')->nullable();
             $table->timestamps();
         });
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->longText('body');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -30,5 +39,6 @@ class Posts extends Migration
     public function down()
     {
         Schema::dropIfExists('posts');
+        Schema::dropIfExists('comments');
     }
 }

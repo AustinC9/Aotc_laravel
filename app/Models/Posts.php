@@ -13,7 +13,7 @@ class Posts extends Model
     protected $primary = 'id';
     public $incrementing = true;
     public $timestamps = true;
-    protected $with = ["user"];
+    protected $with = ["user", "likes"];
 
     public function user()
     {
@@ -22,6 +22,10 @@ class Posts extends Model
     public function comments()
     {
         return $this->hasMany("App\Models\Comment", 'parent_id');
+    }
+    public function likes()
+    {
+        return $this->hasMany("App\Models\Likes", 'post_id', 'id');
     }
     public function scopeWithLikes(Builder $query){
         $query->leftJoinSub('select post_id, sum(liked) likes, sum(!liked) dislikes from likes
@@ -58,8 +62,5 @@ class Posts extends Model
         ->where('liked', false)
         ->count();
     }
-    public function likes()
-    {
-        return $this->hasMany("App\Models\Likes", 'id', 'id');
-    }
+    
 }

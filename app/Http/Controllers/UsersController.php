@@ -35,12 +35,12 @@ class UsersController extends Controller
 
         return response(['data' => $data, 'message' => 'Account created successfully!', 'status' => true]);
     }
-    public function view_postById(Request $request)
-    {
-        $user = $request->user();
-        $posts = $user->posts()->get();
-        return $posts->toArray();
-    }
+    // public function view_postById(Request $request)
+    // {
+    //     $user = $request->user();
+    //     $posts = $user->posts()->get();
+    //     return $posts->toArray();
+    // }
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();

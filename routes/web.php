@@ -31,8 +31,16 @@ $router->group(['middleware' => 'auth'], function() use ($router) {
         $user = $request->user();
         return $user->toArray();
     });
-    $router->get('/userposts', 'UsersController@view_postById');
+    // $router->get('/userposts', 'UsersController@view_postById');
     $router->get('/logout', 'UsersController@logout');
+    $router->get('/likes/{postid}', 'LikesController@allLikesForAPost');
+    $router->get('/userposts', 'PostsController@userPosts');
+    $router->post('/createlike', 'LikesController@createlike');
+    $router->post('/deletelike', 'LikesController@destroylike');
+    $router->post('/createDislike', 'LikesController@createdislike');
+    $router->post('/deleteDislike', 'LikesController@destroydislike');
+
+    //$router->post('/createdislike', 'PostsControllers@dislike');
 });
 
 

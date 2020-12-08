@@ -12,10 +12,16 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
 
         return Posts::all();
+    }
+    public function userPosts(Request $request)
+    {
+        $user = $request->user();
+
+        return Posts::where('ref_author_id', $user->id)->get()->toArray();
     }
     
 
